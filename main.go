@@ -22,7 +22,14 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Url Param is missing")
 		return
 	}
+	lang, ok := r.URL.Query()["lang"]
+
+	if !ok || len(lang[0]) < 1 {
+		lang[0] = "en"
+	}
+
 	targetUrl := keys[0]
+	language := lang[0]
 	fmt.Printf("Target is %s", targetUrl)
 
 	// parse the url
@@ -45,30 +52,30 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
 
 	doc.Find("h1").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 80))
+		s.SetText(pornoliser.Pornolise(s.Text(), 80, language, i))
 	})
 	doc.Find("h2").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 70))
+		s.SetText(pornoliser.Pornolise(s.Text(), 70, language, i))
 
 	})
 	doc.Find("h3").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 60))
+		s.SetText(pornoliser.Pornolise(s.Text(), 60, language, i))
 
 	})
 	doc.Find("h4").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 50))
+		s.SetText(pornoliser.Pornolise(s.Text(), 50, language, i))
 
 	})
 	doc.Find("h5").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 50))
+		s.SetText(pornoliser.Pornolise(s.Text(), 50, language, i))
 
 	})
 	doc.Find("h6").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 50))
+		s.SetText(pornoliser.Pornolise(s.Text(), 50, language, i))
 
 	})
 	doc.Find("p").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 30))
+		s.SetText(pornoliser.Pornolise(s.Text(), 30, language, i))
 
 	})
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
