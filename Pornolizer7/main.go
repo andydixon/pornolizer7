@@ -17,6 +17,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func engineHandler(w http.ResponseWriter, r *http.Request) {
 	keys, ok := r.URL.Query()["url"]
+	language := "en"
 
 	if !ok || len(keys[0]) < 1 {
 		log.Println("Url Param is missing")
@@ -24,14 +25,11 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	lang, ok := r.URL.Query()["lang"]
 
-	if !ok || len(lang[0]) < 1 {
-		language := "en"
-	} else {
-		language := lang[0]
+	if ok && len(lang[0]) < 1 {
+		language = lang[0]
 	}
 
 	targetUrl := keys[0]
-	language := lang[0]
 	fmt.Printf("Target is %s", targetUrl)
 
 	// parse the url
