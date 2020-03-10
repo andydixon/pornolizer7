@@ -25,7 +25,9 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	lang, ok := r.URL.Query()["lang"]
 
 	if !ok || len(lang[0]) < 1 {
-		lang[0] = "en"
+		language := "en"
+	} else {
+		language := lang[0]
 	}
 
 	targetUrl := keys[0]
@@ -82,9 +84,9 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 		s.SetAttr("rel", "noreferrer nofollow")
 		href, _ := s.Attr("href")
 		if strings.HasPrefix(href, "/") {
-			s.SetAttr("href", "http://"+r.Host+"/pornolize?url="+resp.Request.URL.Scheme+"://"+resp.Request.URL.Host+href)
+			s.SetAttr("href", "http://"+r.Host+"/pornolize?lang=" + language + "&url="+resp.Request.URL.Scheme+"://"+resp.Request.URL.Host+href)
 		} else {
-			s.SetAttr("href", "http://"+r.Host+"/pornolize?url="+href)
+			s.SetAttr("href", "http://"+r.Host+"/pornolize?lang=" + language + "&url="+href)
 		}
 	})
 
