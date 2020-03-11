@@ -8,10 +8,7 @@ cd ~/go/src/Pornolizer7
 go get
 go build
 cd $DIR
-mv Pornolizer7 $DIR
-cd $DIR
 cd docker
-mv ~/go/src/Pornolizer7/Pornolizer7 ./docker
-cd docker
+mv ~/go/src/Pornolizer7/Pornolizer7 ./
 docker build -t andydixon:pornolize-beta .
-rm -f Pornolizer7
+#rm -f Pornolizer7
