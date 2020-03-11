@@ -1,13 +1,17 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-mv Pornolizer7 ~/go/src/
+cd $DIR
+cd ..
+mkdir -p ~/go/src/Pornolizer7
+cp -r * ~/go/src/Pornolizer7
 cd ~/go/src/Pornolizer7
 go get
 go build
-cd ..
+cd $DIR
 mv Pornolizer7 $DIR
 cd $DIR
 cd docker
-mv ../Pornolizer7/Pornolizer7 .
+mv ~/go/src/Pornolizer7/Pornolizer7 ./docker
+cd docker
 docker build -t andydixon:pornolize-beta .
 rm -f Pornolizer7
