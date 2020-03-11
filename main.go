@@ -11,8 +11,19 @@ import (
 	"strings"
 )
 
+func main() {
+	http.HandleFunc("/", handler)
+	http.HandleFunc("/pornolize/", engineHandler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, support.DefaultHomepage())
+	if r.URL.Path != "/" {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprint(w, support.Error404())
+	} else {
+		fmt.Fprint(w, support.DefaultHomepage())
+	}
 }
 
 func engineHandler(w http.ResponseWriter, r *http.Request) {
@@ -82,9 +93,9 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 		s.SetAttr("rel", "noreferrer nofollow")
 		href, _ := s.Attr("href")
 		if strings.HasPrefix(href, "/") {
-			s.SetAttr("href", "http://"+r.Host+"/pornolize?lang=" + language + "&url="+resp.Request.URL.Scheme+"://"+resp.Request.URL.Host+href)
+			s.SetAttr("href", "http://"+r.Host+"/pornolize?lang="+language+"&url="+resp.Request.URL.Scheme+"://"+resp.Request.URL.Host+href)
 		} else {
-			s.SetAttr("href", "http://"+r.Host+"/pornolize?lang=" + language + "&url="+href)
+			s.SetAttr("href", "http://"+r.Host+"/pornolize?lang="+language+"&url="+href)
 		}
 	})
 
@@ -114,10 +125,4 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprint(w, returnContent)
 	defer resp.Body.Close()
-}
-
-func main() {
-	http.HandleFunc("/", handler)
-	http.HandleFunc("/pornolize/", engineHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
 }
