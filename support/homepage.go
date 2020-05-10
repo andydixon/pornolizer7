@@ -51,9 +51,9 @@ func DefaultHomepage(hits int64, datetime string) string {
 		<input type="submit" value="Translate" class="button" />
 		</form>
 		</div>
-		<div>
-		<span class="outro">&copy;2020 Andy Dixon - <a href="https://dxn.pw" style="color:#ffffff;text-decoration:none;font-weight: bold">dxn.pw</a> - Version 7</span>
-		<small>` + strconv.FormatInt(hits, 10) + ` page translations since ` + datetime + `<small>
+		<div><br />
+		<span class="outro">&copy;2020  <a href="https://dxn.pw" style="color:#ffffff;text-decoration:none;font-weight: bold">Andy Dixon</a> - Version 7 <br />
+     	<small>` + strconv.FormatInt(hits, 10) + ` page translations since ` + datetime + `<small></span>
 		</div>
 		</div>
 		</body>`
