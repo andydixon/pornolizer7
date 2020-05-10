@@ -1,6 +1,8 @@
 package support
 
-func DefaultHomepage() string {
+import "strconv"
+
+func DefaultHomepage(hits int64, datetime string) string {
 
 	return `<!DOCTYPE html>
 	<html>
@@ -51,6 +53,7 @@ func DefaultHomepage() string {
 		</div>
 		<div>
 		<span class="outro">&copy;2020 Andy Dixon - <a href="https://dxn.pw" style="color:#ffffff;text-decoration:none;font-weight: bold">dxn.pw</a> - Version 7</span>
+		<small>` + strconv.FormatInt(hits, 10) + ` page translations since ` + datetime + `<small>
 		</div>
 		</div>
 		</body>`

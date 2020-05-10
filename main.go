@@ -9,24 +9,33 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
+var hits int64
+var dtm string
+
 func main() {
+	hits = 0
+	dt := time.Now()
+	dtm = dt.Format("01-02-2006 15:04:05")
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/pornolize/", engineHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	hits++
 	if r.URL.Path != "/" {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprint(w, support.Error404())
 	} else {
-		fmt.Fprint(w, support.DefaultHomepage())
+		fmt.Fprint(w, support.DefaultHomepage(hits, dtm))
 	}
 }
 
 func engineHandler(w http.ResponseWriter, r *http.Request) {
+	hits++
 	keys, ok := r.URL.Query()["url"]
 	language := "en"
 
