@@ -3,6 +3,7 @@ package main
 import (
 	"Pornolizer7/pornoliser"
 	"Pornolizer7/support"
+	"encoding/base64"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"log"
@@ -20,8 +21,15 @@ func main() {
 	dt := time.Now()
 	dtm = dt.Format("01-02-2006 15:04:05")
 	http.HandleFunc("/", handler)
+	http.HandleFunc("/background", background)
 	http.HandleFunc("/pornolize/", engineHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func background(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "image/png")
+	sDec, _ := base64.StdEncoding.DecodeString(support.Background())
+	fmt.Fprint(w, string(sDec))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
