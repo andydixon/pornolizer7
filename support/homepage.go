@@ -21,8 +21,8 @@ func DefaultHomepage(hits int64, datetime string) string {
 	.intnu{background: rgb(240, 200, 160);border: 1px dotted rgb(20, 60, 80);	color: rgb(20, 60, 80);	display: inline-block;	font-family: sans-serif;font-size: 12px;font-weight: bolder;padding: 4px 6px 2px;position: absolute;text-shadow: none;transform: rotate(-10deg) translate(20px, -25px);}
 	.vt__container {display: inline-block;	margin: 25px auto 40px;	}
 	.vt {font-family: 'Six Caps', sans-serif;font-size: 192px;letter-spacing: 10px;line-height: 1;margin: 0;position: relative;}
-	.vt {	background: linear-gradient(rgb(240, 220, 200), rgb(230, 200, 160));-webkit-background-clip: text;background-clip: text;position: absolute;z-index: 1;-webkit-text-fill-color: transparent;text-fill-color: transparent;}
-	.vb {text-shadow:2px 1px rgb(85, 10, 0),4px 2px rgb(90, 15, 5),6px 4px rgb(100, 20, 15),8px 5px rgb(105, 25, 20),10px 6px rgb(110, 30, 25),12px 7px rgb(115, 30, 30),14px 8px rgb(120, 30, 35),16px 9px black,18px 10px black,20px 11px black,22px 12px black,24px 13px black,28px 14px rgba(0, 0, 0, 0.9),30px 15px rgba(0, 0, 0, 0.7),32px 16px rgba(0, 0, 0, 0.5),34px 17px rgba(0, 0, 0, 0.3),36px 18px rgba(0, 0, 0, 0.1),40px 20px rgba(0, 0, 0, 0.1);}
+	.vtt {	background: linear-gradient(rgb(240, 220, 200), rgb(230, 200, 160));-webkit-background-clip: text;background-clip: text;position: absolute;z-index: 1;-webkit-text-fill-color: transparent;text-fill-color: transparent;}
+	.vtb {text-shadow:2px 1px rgb(85, 10, 0),4px 2px rgb(90, 15, 5),6px 4px rgb(100, 20, 15),8px 5px rgb(105, 25, 20),10px 6px rgb(110, 30, 25),12px 7px rgb(115, 30, 30),14px 8px rgb(120, 30, 35),16px 9px black,18px 10px black,20px 11px black,22px 12px black,24px 13px black,28px 14px rgba(0, 0, 0, 0.9),30px 15px rgba(0, 0, 0, 0.7),32px 16px rgba(0, 0, 0, 0.5),34px 17px rgba(0, 0, 0, 0.3),36px 18px rgba(0, 0, 0, 0.1),40px 20px rgba(0, 0, 0, 0.1);}
 	.derr {color: white;font-family: 'Satisfy', cursive;font-size: 16px;}
 	</style>
 	<title>The Pornolizer: The Original Digital Sin</title>
@@ -36,8 +36,8 @@ func DefaultHomepage(hits int64, datetime string) string {
 	<span class="intr">Original Digital Sin</span>
 	</div>
 	<div class="vt__container">
-	<p class="vt vt">PORNOLIZER</p>
-	<p class="vt vb">PORNOLIZER</p>
+	<p class="vt vtt">PORNOLIZER</p>
+	<p class="vt vtb">PORNOLIZER</p>
 	</div>
 	<div>
 	<form action="/pornolize" method="get">
