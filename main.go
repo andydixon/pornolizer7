@@ -23,7 +23,7 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/background", background)
 	http.HandleFunc("/pornolize/", engineHandler)
-	log.Fatal(http.ListenAndServe(":80", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func background(w http.ResponseWriter, r *http.Request) {
