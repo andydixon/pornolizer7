@@ -4,6 +4,7 @@ import (
 	"Pornolizer7/pornoliser"
 	"Pornolizer7/support"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"log"
@@ -16,6 +17,15 @@ import (
 var hits int64
 var dtm string
 
+type apiResponse struct {
+	Pornolised string `json:"pornolised"`
+}
+
+type reqObject struct {
+	sweariness int
+	text       string
+}
+
 func main() {
 	hits = 0
 	dt := time.Now()
@@ -23,6 +33,9 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/background", background)
 	http.HandleFunc("/pornolize/", engineHandler)
+	http.HandleFunc("/api/", apiHandler)
+	http.HandleFunc("/api", apiHandler)
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -30,6 +43,24 @@ func background(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image/png")
 	sDec, _ := base64.StdEncoding.DecodeString(support.Background())
 	fmt.Fprint(w, string(sDec))
+}
+
+func apiHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	decoder := json.NewDecoder(r.Body)
+	var request reqObject
+	err := decoder.Decode(&request)
+	if err != nil {
+		response := &apiResponse{Pornolised: "error"}
+		responseJson, _ := json.Marshal(response)
+		fmt.Fprint(w, string(responseJson))
+	} else {
+		language := "en"
+		response := &apiResponse{Pornolised: pornoliser.Pornolise(request.text, request.sweariness, language, 1337)}
+		responseJson, _ := json.Marshal(response)
+		fmt.Fprint(w, string(responseJson))
+	}
+
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
