@@ -10,5 +10,5 @@ go build
 cd $DIR
 cd docker
 mv ~/go/src/Pornolizer7/Pornolizer7 ./
-docker build -t andydixon:pornolize-beta .
+docker build -t andydixon:pornolizer7 . --no-cache
 #rm -f Pornolizer7

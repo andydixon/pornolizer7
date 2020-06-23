@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"io/ioutil"
 	"time"
 )
 
@@ -22,8 +23,8 @@ type apiResponse struct {
 }
 
 type reqObject struct {
-	sweariness int
-	text       string
+	Text string `json:"text"`
+	Sweariness int `json:"sweariness"`
 }
 
 func main() {
@@ -47,16 +48,21 @@ func background(w http.ResponseWriter, r *http.Request) {
 
 func apiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	decoder := json.NewDecoder(r.Body)
+        body, err := ioutil.ReadAll(r.Body)
+        if err != nil {
+           log.Printf("Error reading body: %v", err)
+           http.Error(w, "can't read body", http.StatusBadRequest)
+           return
+        }
 	var request reqObject
-	err := decoder.Decode(&request)
+	err = json.Unmarshal(body,&request)
 	if err != nil {
 		response := &apiResponse{Pornolised: "error"}
 		responseJson, _ := json.Marshal(response)
 		fmt.Fprint(w, string(responseJson))
 	} else {
 		language := "en"
-		response := &apiResponse{Pornolised: pornoliser.Pornolise(request.text, request.sweariness, language, 1337)}
+		response := &apiResponse{Pornolised: pornoliser.Pornolise(request.Text, request.Sweariness, language, 1337)}
 		responseJson, _ := json.Marshal(response)
 		fmt.Fprint(w, string(responseJson))
 	}
