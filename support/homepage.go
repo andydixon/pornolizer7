@@ -60,5 +60,15 @@ func DefaultHomepage(hits int64, datetime string) string {
      	<small>` + strconv.FormatInt(hits, 10) + ` page translations since ` + datetime + `<small></span>
 		</div>
 		</div>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-76162478-4"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		    function gtag(){dataLayer.push(arguments);}
+		      gtag('js', new Date());
+
+		        gtag('config', 'UA-76162478-4');
+			</script>
+
 		</body>`
 }
