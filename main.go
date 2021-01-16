@@ -3,6 +3,7 @@ package main
 import (
 	"Pornolizer7/pornoliser"
 	"Pornolizer7/support"
+	"Pornolizer7/bots"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -34,8 +35,11 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/background", background)
 	http.HandleFunc("/pornolize/", engineHandler)
+	http.HandleFunc("/translate/", engineHandler)
 	http.HandleFunc("/api/", apiHandler)
 	http.HandleFunc("/api", apiHandler)
+
+	go bots.TelegramThread()
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -83,7 +87,7 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	hits++
 	keys, ok := r.URL.Query()["url"]
 	language := "en"
-
+	
 	if !ok || len(keys[0]) < 1 {
 		log.Println("Url Param is missing")
 		return
@@ -96,6 +100,8 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 
 	targetUrl := keys[0]
 	fmt.Printf("Target is %s", targetUrl)
+
+	bots.MessageAdminThroughTelegram("URL Hit:\n" + targetUrl + "\nLanguage: " + language)
 
 	// parse the url
 	destURL, _ := url.Parse(targetUrl)
@@ -173,6 +179,9 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	doc.Find("head").AppendHtml("<base href='" + resp.Request.URL.Scheme + "://" + resp.Request.URL.Host + "'>")
+	doc.Find("body").AppendHtml("<script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-76162478-4\"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-76162478-4');</script>");
+	doc.Find("head").PrependHtml("\n\n<!-- Converted by The Pornoliser (c)2021 Andy Dixon - pornolize.com / andydixon.com -->\n\n");
+	
 	returnContent, err := doc.Html()
 	if err != nil {
 		panic(err)
