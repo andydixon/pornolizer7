@@ -1,23 +1,22 @@
 package main
 
 import (
-	"Pornolizer7/pornoliser"
-	"Pornolizer7/support"
-	"Pornolizer7/bots"
-	"encoding/base64"
+	"embed"
 	"encoding/json"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
+	"io/fs"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"pornolizer-go/engine"
 	"strings"
-	"io/ioutil"
-	"time"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
-var hits int64
-var dtm string
+//go:embed html
+var homepage embed.FS
 
 type apiResponse struct {
 	Pornolised string `json:"pornolised"`
@@ -29,25 +28,14 @@ type reqObject struct {
 }
 
 func main() {
-	hits = 0
-	dt := time.Now()
-	dtm = dt.Format("01-02-2006 15:04:05")
-	http.HandleFunc("/", handler)
-	http.HandleFunc("/background", background)
+	serverRoot, _ := fs.Sub(homepage, "html")
+
 	http.HandleFunc("/pornolize/", engineHandler)
 	http.HandleFunc("/translate/", engineHandler)
 	http.HandleFunc("/api/", apiHandler)
-	http.HandleFunc("/api", apiHandler)
-
-	go bots.TelegramThread()
+    http.Handle("/", http.FileServer(http.FS(serverRoot)))
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
-}
-
-func background(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "image/png")
-	sDec, _ := base64.StdEncoding.DecodeString(support.Background())
-	fmt.Fprint(w, string(sDec))
 }
 
 func apiHandler(w http.ResponseWriter, r *http.Request) {
@@ -66,25 +54,14 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, string(responseJson))
 	} else {
 		language := "en"
-		response := &apiResponse{Pornolised: pornoliser.Pornolise(request.Text, request.Sweariness, language, 1337)}
+		response := &apiResponse{Pornolised: engine.Pornolise(request.Text, request.Sweariness, language, 1337)}
 		responseJson, _ := json.Marshal(response)
 		fmt.Fprint(w, string(responseJson))
 	}
 
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	hits++
-	if r.URL.Path != "/" {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprint(w, support.Error404())
-	} else {
-		fmt.Fprint(w, support.DefaultHomepage(hits, dtm))
-	}
-}
-
 func engineHandler(w http.ResponseWriter, r *http.Request) {
-	hits++
 	keys, ok := r.URL.Query()["url"]
 	language := "en"
 	
@@ -101,8 +78,6 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	targetUrl := keys[0]
 	fmt.Printf("Target is %s", targetUrl)
 
-	bots.MessageAdminThroughTelegram("URL Hit:\n" + targetUrl + "\nLanguage: " + language)
-
 	// parse the url
 	destURL, _ := url.Parse(targetUrl)
 	params := url.Values{}
@@ -110,7 +85,7 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	body := strings.NewReader(params.Encode())
 	proxyRequest, _ := http.NewRequest(r.Method, destURL.String(), body)
 	//req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	proxyRequest.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36 dxnpw/pz7")
+	proxyRequest.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36 dxn/pz7")
 	resp, err := http.DefaultClient.Do(proxyRequest)
 	if err != nil {
 		panic(err)
@@ -123,30 +98,30 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
 
 	doc.Find("h1").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 80, language, i))
+		s.SetText(engine.Pornolise(s.Text(), 80, language, i))
 	})
 	doc.Find("h2").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 70, language, i))
+		s.SetText(engine.Pornolise(s.Text(), 70, language, i))
 
 	})
 	doc.Find("h3").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 60, language, i))
+		s.SetText(engine.Pornolise(s.Text(), 60, language, i))
 
 	})
 	doc.Find("h4").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 50, language, i))
+		s.SetText(engine.Pornolise(s.Text(), 50, language, i))
 
 	})
 	doc.Find("h5").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 50, language, i))
+		s.SetText(engine.Pornolise(s.Text(), 50, language, i))
 
 	})
 	doc.Find("h6").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 50, language, i))
+		s.SetText(engine.Pornolise(s.Text(), 50, language, i))
 
 	})
 	doc.Find("p").Each(func(i int, s *goquery.Selection) {
-		s.SetText(pornoliser.Pornolise(s.Text(), 30, language, i))
+		s.SetText(engine.Pornolise(s.Text(), 30, language, i))
 
 	})
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
@@ -179,7 +154,6 @@ func engineHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	doc.Find("head").AppendHtml("<base href='" + resp.Request.URL.Scheme + "://" + resp.Request.URL.Host + "'>")
-	doc.Find("body").AppendHtml("<script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-76162478-4\"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-76162478-4');</script>");
 	doc.Find("head").PrependHtml("\n\n<!-- Converted by The Pornoliser (c)2021 Andy Dixon - pornolize.com / andydixon.com -->\n\n");
 	
 	returnContent, err := doc.Html()

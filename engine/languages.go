@@ -1,4 +1,4 @@
-package pornoliser
+package engine
 
 var languageAdjectives = map[string][]string{
 	"en": {
